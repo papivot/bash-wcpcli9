@@ -20,7 +20,7 @@
                     } ]
                 } ]
             },
-            "network": "managementNetwork0",
+            "network": "managementnetwork0",
             "proxy": {
                 "proxy_settings_source": "VC_INHERITED"
             },
@@ -76,7 +76,7 @@
                     } ]
                 } ]
             },
-            "network": "workloadNetwork0",
+            "network": "workloadnetwork0",
             "network_type": "NSXT",
             "nsx": {
                 "dvs": "${NSX_DVS}",
