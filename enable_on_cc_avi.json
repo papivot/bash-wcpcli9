@@ -32,8 +32,8 @@
                 }
             }
         },
-        "size": "SMALL",
-        "storage_policy": "${TKGStoragePolicy}"
+        "size": "${SUPERVISOR_SIZE}",
+        "storage_policy": "${TKG_STORAGE_POLICY}"
     },
     "name": "${SUPERVISOR_NAME}",
     "workloads": {
@@ -85,8 +85,8 @@
             }
         },
         "storage": {
-            "ephemeral_storage_policy": "${TKGStoragePolicy}",
-            "image_storage_policy": "${TKGStoragePolicy}"
+            "ephemeral_storage_policy": "${TKG_STORAGE_POLICY}",
+            "image_storage_policy": "${TKG_STORAGE_POLICY}"
         }
     }
 }
