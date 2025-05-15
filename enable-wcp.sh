@@ -26,6 +26,7 @@ export K8S_SERVICE_SUBNET_COUNT=512 # Allowed values are 256, 512, 1024, 2048, 4
 export SUPERVISOR_NAME='supervisorCluster0'
 export SUPERVISOR_SIZE=TINY # Allowed values are TINY, SMALL, MEDIUM, LARGE 
 export SUPERVISOR_VM_COUNT=1 # Allowed values are 1, 3
+K8S_SUP_CLUSTER=Cluster
 K8S_MGMT_PORTGROUP1='seg-mgmt-tanzu-supervisor'
 K8S_WKD0_PORTGROUP='Workload0-VDS-PG' # Not needed for NSX
 K8S_STORAGE_POLICY='vSAN Default Storage Policy'
@@ -110,6 +111,24 @@ then
 fi
 echo Authenticated successfully to VC with Session ID - "${SESSION_ID}" ...
 HEADER_SESSIONID="vmware-api-session-id: ${SESSION_ID}"
+
+################################################
+# Get cluster details from vCenter
+###############################################
+echo "Searching for Cluster ${K8S_SUP_CLUSTER} ..."
+response=$(curl -ks --write-out "%{http_code}" -X GET  -H "${HEADER_SESSIONID}" https://${VCENTER_HOSTNAME}/api/vcenter/cluster --output /tmp/temp_cluster.json)
+if [[ "${response}" -ne 200 ]] ; then
+  echo "Error: Could not fetch clusters. Please validate!!"
+  exit 1
+fi
+
+export VKSClusterID=$(jq -r --arg K8S_SUP_CLUSTER "$K8S_SUP_CLUSTER" '.[]|select(.name == $K8S_SUP_CLUSTER).cluster' /tmp/temp_cluster.json)
+#export VKSClusterID=$(jq -r --arg K8S_SUP_CLUSTER "$K8S_SUP_CLUSTER" '.[]|select(.name|contains($K8S_SUP_CLUSTER)).cluster' /tmp/temp_cluster.json)
+if [ -z "${VKSClusterID}" ]
+then
+        echo "Error: Could not fetch cluster - ${K8S_SUP_CLUSTER} . Please validate!!"
+        exit 1
+fi
 
 ################################################
 # Get storage policy details from vCenter
@@ -228,8 +247,8 @@ fi
 # Enable Supervisor
 ###############################################
 envsubst < cluster.json > temp_final.json
-echo "Enabling Supervisor ..."
-curl -ks -X POST -H "${HEADER_SESSIONID}" -H "${HEADER_CONTENTTYPE}" -d "@temp_final.json" https://${VCENTER_HOSTNAME}/api/vcenter/namespace-management/supervisors/domain-c10?action=enable_on_compute_cluster
+echo "Enabling Supervisor cluster ${TKGClusterID}..."
+curl -ks -X POST -H "${HEADER_SESSIONID}" -H "${HEADER_CONTENTTYPE}" -d "@temp_final.json" https://${VCENTER_HOSTNAME}/api/vcenter/namespace-management/supervisors/${TKGClusterID}?action=enable_on_compute_cluster
 
 #TODO while configuring, keep checking for status of Supervisor until ready
 #curl -X POST 'https://vcsa-01.lab9.com/api/vcenter/namespace-management/supervisors/domain-c10?action=enable_on_compute_cluster'
