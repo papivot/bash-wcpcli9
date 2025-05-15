@@ -5,7 +5,7 @@
         "network": {
             "backing": {
                 "backing": "NETWORK",
-                "network": "${TKG_MGMT_NETWORK1}"
+                "network": "${VKS_MGMT_NETWORK1}"
             },
             "ip_management": {
                 "dhcp_enabled": false,
@@ -33,7 +33,7 @@
             }
         },
         "size": "${SUPERVISOR_SIZE}",
-        "storage_policy": "${TKG_STORAGE_POLICY}"
+        "storage_policy": "${VKS_STORAGE_POLICY}"
     },
     "name": "${SUPERVISOR_NAME}",
     "workloads": {
@@ -81,12 +81,12 @@
                 }
             },
             "vsphere": {
-                "dvpg": "${WORKLOAD_DVS}"
+                "dvpg": "${VKS_WKLD_NETWORK}"
             }
         },
         "storage": {
-            "ephemeral_storage_policy": "${TKG_STORAGE_POLICY}",
-            "image_storage_policy": "${TKG_STORAGE_POLICY}"
+            "ephemeral_storage_policy": "${VKS_STORAGE_POLICY}",
+            "image_storage_policy": "${VKS_STORAGE_POLICY}"
         }
     }
 }

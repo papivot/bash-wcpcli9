@@ -6,7 +6,7 @@
             "backing": {
                 "backing": "NETWORK_SEGMENT",
                 "network_segment": {
-                    "networks": [ "${TKG_MGMT_NETWORK1}" ]
+                    "networks": [ "${VKS_MGMT_NETWORK1}" ]
                 }
             },
             "ip_management": {
@@ -35,7 +35,7 @@
             }
         },
         "size": "${SUPERVISOR_SIZE}",
-        "storage_policy": "${TKG_STORAGE_POLICY}"
+        "storage_policy": "${VKS_STORAGE_POLICY}"
     },
     "name": "${SUPERVISOR_NAME}",
     "workloads": {
@@ -75,8 +75,8 @@
             }
         },
         "storage": {
-            "ephemeral_storage_policy": "${TKG_STORAGE_POLICY}",
-            "image_storage_policy": "${TKG_STORAGE_POLICY}"
+            "ephemeral_storage_policy": "${VKS_STORAGE_POLICY}",
+            "image_storage_policy": "${VKS_STORAGE_POLICY}"
         }
     }
 }

@@ -27,6 +27,7 @@ export SUPERVISOR_NAME='supervisorCluster0'
 export SUPERVISOR_SIZE=TINY # Allowed values are TINY, SMALL, MEDIUM, LARGE 
 export SUPERVISOR_VM_COUNT=1 # Allowed values are 1, 3
 K8S_MGMT_PORTGROUP1='seg-mgmt-tanzu-supervisor'
+K8S_WKD0_PORTGROUP='Workload0-VDS-PG' # Not needed for NSX
 K8S_STORAGE_POLICY='vSAN Default Storage Policy'
 
 ###############################################################
@@ -120,9 +121,9 @@ if [[ "${response}" -ne 200 ]] ; then
   exit 1
 fi
 
-export TKG_STORAGE_POLICY=$(jq -r --arg K8S_STORAGE_POLICY "$K8S_STORAGE_POLICY" '.[]| select(.name == $K8S_STORAGE_POLICY)|.policy' /tmp/temp_storagepolicies.json)
+export VKS_STORAGE_POLICY=$(jq -r --arg K8S_STORAGE_POLICY "$K8S_STORAGE_POLICY" '.[]| select(.name == $K8S_STORAGE_POLICY)|.policy' /tmp/temp_storagepolicies.json)
 #export TKGStoragePolicy=$(jq -r --arg K8S_STORAGE_POLICY "$K8S_STORAGE_POLICY" '.[]| select(.name|contains($K8S_STORAGE_POLICY))|.policy' /tmp/temp_storagepolicies.json)
-if [ -z "${TKG_STORAGE_POLICY}" ]
+if [ -z "${VKS_STORAGE_POLICY}" ]
 then
         echo "Error: Could not fetch storage policy - ${K8S_STORAGE_POLICY} . Please validate!!"
         exit 1
@@ -138,10 +139,10 @@ if [[ "${response}" -ne 200 ]] ; then
   exit 1
 fi
 
-export TKG_MGMT_NETWORK1=$(jq -r --arg K8S_MGMT_PORTGROUP1 "$K8S_MGMT_PORTGROUP1" '.[]| select(.name == $K8S_MGMT_PORTGROUP1)|.network' /tmp/temp_networkportgroups.json)
-#export TKGWorkload0Network=$(jq -r --arg K8S_WKD0_PORTGROUP "$K8S_WKD0_PORTGROUP" '.[]| select(.name == $K8S_WKD0_PORTGROUP)|.network' /tmp/temp_networkportgroups.json)
+export VKS_MGMT_NETWORK1=$(jq -r --arg K8S_MGMT_PORTGROUP1 "$K8S_MGMT_PORTGROUP1" '.[]| select(.name == $K8S_MGMT_PORTGROUP1)|.network' /tmp/temp_networkportgroups.json)
+export VKS_WKLD_NETWORK=$(jq -r --arg K8S_WKD0_PORTGROUP "$K8S_WKD0_PORTGROUP" '.[]| select(.name == $K8S_WKD0_PORTGROUP)|.network' /tmp/temp_networkportgroups.json)
 
-if [ -z "${TKG_MGMT_NETWORK1}" ]
+if [ -z "${VKS_MGMT_NETWORK1}" ]
 then
         echo "Error: Could not fetch portgroup - ${K8S_MGMT_PORTGROUP1} . Please validate!!"
         exit 1
@@ -150,7 +151,7 @@ fi
 ################################################
 # Get NSXALB CA CERT
 ###############################################
-if [ ${DEPLOYMENT_TYPE} == "VDS" ]
+if [ ${DEPLOYMENT_TYPE} == "AVI" ]
 then
         echo "Getting NSX ALB CA Certificate for  ${AVI_CONTROLLER} ..."
         openssl s_client -showcerts -connect ${AVI_CONTROLLER}:443  </dev/null 2>/dev/null|sed -ne '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' > /tmp/temp_avi-ca.cert
@@ -160,6 +161,12 @@ then
                 exit 1
         fi
         export AVI_CACERT=$(jq -sR . /tmp/temp_avi-ca.cert)
+        
+        if [ -z "${VKS_WKLD_NETWORK}" ]
+        then
+                echo "Error: Could not fetch portgroup - ${K8S_WKD0_PORTGROUP} . Please validate!!"
+                exit 1
+        fi
 fi
 
 ################################################
