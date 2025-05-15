@@ -1,1 +1,1 @@
-# bash-wcpcli9
+# Bash Script to enable Supervisor on VCF 9.0 (Compute Cluster)
