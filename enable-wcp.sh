@@ -11,7 +11,7 @@ NSX_MANAGER=172.16.41.14
 NSX_USERNAME='admin'
 NSX_PASSWORD='Password'
 
-DEPLOYMENT_TYPE='NSX' # Allowed values are VPC, NSX, AVI, FLB  
+DEPLOYMENT_TYPE='FLB' # Allowed values are VPC, NSX, AVI, FLB  
 
 #####################################################
 # Common variables
@@ -41,6 +41,18 @@ K8S_STORAGE_POLICY='vSAN Default Storage Policy'
 #export AVI_WORKLOAD_NW_GATEWAY_CIDR='192.168.102.1/23'
 #export AVI_WORKLOAD_STARTING_IP='192.168.102.100'
 #export AVI_WORKLOAD_IP_COUNT=64
+
+###############################################################
+# FLB specific variables
+###############################################################
+export FLB_STARTING_IP='192.168.2.135'
+export FLB_WORKLOAD_NW_GATEWAY_CIDR='192.168.102.1/23'
+export FLB_STARTING_IP='192.168.102.10'
+export FLB_WORKLOAD_STARTING_IP='192.168.102.100'
+export FLB_WORKLOAD_IP_COUNT=64
+export FLB_VIP_STARTING_IP='192.168.102.100'
+export FLB_VIP_IP_COUNT=64
+
 
 #############################################################
 # NSX specific variables

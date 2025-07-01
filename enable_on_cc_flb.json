@@ -1,27 +1,24 @@
 {
     "control_plane": {
-        "count": 3,
+        "count": ${SUPERVISOR_VM_COUNT},
         "login_banner": "Your login banner message",
         "network": {
             "backing": {
-                "backing": "NETWORK/NETWORK_SEGMENT",
-                "network": "type: MOID of network",
-                "network_segment": {
-                    "networks": [ "type: MOID of network0", "type: MOID of network1", "type: MOID of network2" ]
-                }
+                "backing": "NETWORK",
+                "network": "${VKS_MGMT_NETWORK1}"
             },
             "ip_management": {
                 "dhcp_enabled": false,
-                "gateway_address": "",
+                "gateway_address": "${MGMT_GATEWAY_CIDR}",
                 "ip_assignments": [ {
-                    "assignee": "POD/NODE/SERVICE",
+                    "assignee": "NODE",
                     "ranges": [ {
-                        "address": "",
-                        "count": 0
+                        "address": "${MGMT_STARTING_IP}",
+                        "count": 5
                     } ]
                 } ]
             },
-            "network": "managementNetwork",
+            "network": "managementnetwork0",
             "proxy": {
                 "proxy_settings_source": "VC_INHERITED"
             },
@@ -35,114 +32,91 @@
                 }
             }
         },
-        "size": "SMALL",
-        "storage_policy": "${TKGStoragePolicy}"
+        "size": "${SUPERVISOR_SIZE}",
+        "storage_policy": "${VKS_STORAGE_POLICY}"
     },
-    "name": "supervisorClusterName",
+    "name": "${SUPERVISOR_NAME}",
     "workloads": {
         "edge": {
             "foundation": {
                 "deployment_target": {
-                    "availability": "ACTIVE_PASSIVE",
+                    "availability": "SINGLE_NODE",
                     "deployment_size": "SMALL",
-                    "storage_policy": "",
-                    "zones": [ "" ]
+                    "storage_policy": "${VKS_STORAGE_POLICY}"
                 },
                 "interfaces": [ {
                     "network": {
                         "dvpg_network": {
                             "ip_config": {
-                                "gateway": "",
+                                "gateway": "${MGMT_GATEWAY_CIDR}",
                                 "ip_ranges": [ {
-                                    "address": "",
-                                    "count": 0
+                                    "address": "${FLB_STARTING_IP}", 
+                                    "count": 2
                                 } ]
                             },
                             "ipam": "STATIC",
-                            "name": "",
-                            "network": ""
+                            "name": "managementnetwork0",
+                            "network": "${VKS_MGMT_NETWORK1}"
                         },
                         "network_type": "SUPERVISOR_MANAGEMENT"
                     },
                     "personas": [ "MANAGEMENT" ]
+                },
+                {
+                    "network": {
+                        "dvpg_network": {
+                            "ip_config": {
+                                "gateway": "${FLB_WORKLOAD_NW_GATEWAY_CIDR}",
+                                "ip_ranges": [ {
+                                    "address": "${FLB_STARTING_IP}",
+                                    "count": 2
+                                } ]
+                            },
+                            "ipam": "STATIC",
+                            "name": "frontend",
+                            "network": "${VKS_WKLD_NETWORK}"
+                        },
+                        "network_type": "DVPG"
+                    },
+                    "personas": [ "FRONTEND", "WORKLOAD" ]
                 } ],
                 "network_services": {
                     "dns": {
-                        "search_domains": [ "" ],
-                        "servers": [ "" ]
+                        "search_domains": [ "${DNS_SEARCHDOMAIN}" ],
+                        "servers": [ "${NTP_SERVER}" ]
                     },
                     "ntp": {
-                        "servers": [ "" ]
-                    },
-                    "syslog": {
-                        "certificate_authority_pem": "",
-                        "endpoint": ""
+                        "servers": [ "${NTP_SERVER}" ]
                     }
                 }
             },
-            "haproxy": {
-                "certificate_authority_chain": "",
-                "password": "",
-                "servers": [ {
-                    "host": "",
-                    "port": 0
-                } ],
-                "username": ""
-            },
-            "id": "",
             "load_balancer_address_ranges": [ {
-                "address": "",
-                "count": 0
+                "address": "${FLB_VIP_STARTING_IP}",
+                "count": ${FLB_VIP_IP_COUNT}
             } ],
-            "nsx": {
-                "default_ingress_TLS_certificate": "",
-                "edge_cluster_ID": "",
-                "egress_IP_ranges": [ {
-                    "address": "",
-                    "count": 0
-                } ],
-                "load_balancer_size": "SMALL",
-                "routing_mode": "ROUTED",
-                "t0_gateway": ""
-            },
-            "nsx_advanced": {
-                "certificate_authority_chain": "",
-                "cloud_name": "",
-                "password": "",
-                "server": {
-                    "host": "",
-                    "port": 0
-                },
-                "username": ""
-            },
-            "provider": "HAPROXY"
+            "provider": "VSPHERE_FOUNDATION"
         },
         "network": {
             "ip_management": {
                 "dhcp_enabled": false,
-                "gateway_address": "",
+                "gateway_address": "FLB_WORKLOAD_NW_GATEWAY_CIDR",
                 "ip_assignments": [ {
-                    "assignee": "POD/NODE/SERVICE",
+                    "assignee": "NODE",
                     "ranges": [ {
-                        "address": "",
-                        "count": 0
+                        "address": "${FLB_WORKLOAD_STARTING_IP}",
+                        "count": ${FLB_WORKLOAD_IP_COUNT}
+                    } ]
+                },
+                {
+                    "assignee": "SERVICE",
+                    "ranges": [ {
+                        "address": "${K8S_SERVICE_SUBNET}",
+                        "count": ${K8S_SERVICE_SUBNET_COUNT}
                     } ]
                 } ]
             },
             "network": "workloadNetwork0",
-            "network_type": "NSXT/VSPHERE/NSX_VPC",
-            "nsx": {
-                "dvs": "",
-                "namespace_subnet_prefix": 0
-            },
-            "nsx_vpc": {
-                "default_private_cidrs": [ {
-                    "address": "",
-                    "prefix": 0
-                } ],
-                "nsx_project": "",
-                "vpc_connectivity_profile": ""
-            },
+            "network_type": "VSPHERE",
             "services": {
                 "dns": {
                     "search_domains": [ "${DNS_SEARCHDOMAIN}" ],
@@ -153,12 +127,12 @@
                 }
             },
             "vsphere": {
-                "dvpg": ""
+                "dvpg": "${VKS_WKLD_NETWORK}"
             }
         },
         "storage": {
-            "ephemeral_storage_policy": "${TKGStoragePolicy}",
-            "image_storage_policy": "${TKGStoragePolicy}"
+            "ephemeral_storage_policy": "${VKS_STORAGE_POLICY}",
+            "image_storage_policy": "${VKS_STORAGE_POLICY}"
         }
     }
 }
