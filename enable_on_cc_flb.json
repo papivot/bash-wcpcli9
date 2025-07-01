@@ -50,8 +50,8 @@
                             "ip_config": {
                                 "gateway": "${MGMT_GATEWAY_CIDR}",
                                 "ip_ranges": [ {
-                                    "address": "${FLB_STARTING_IP}", 
-                                    "count": 2
+                                    "address": "${FLB_MANAGEMENT_STARTING_IP}", 
+                                    "count": ${FLB_MANAGEMENT_IP_COUNT}
                                 } ]
                             },
                             "ipam": "STATIC",
@@ -68,8 +68,8 @@
                             "ip_config": {
                                 "gateway": "${FLB_WORKLOAD_NW_GATEWAY_CIDR}",
                                 "ip_ranges": [ {
-                                    "address": "${FLB_STARTING_IP}",
-                                    "count": 2
+                                    "address": "${FLB_NW_STARTING_IP}",
+                                    "count": ${FLB_NW_IP_COUNT}
                                 } ]
                             },
                             "ipam": "STATIC",
