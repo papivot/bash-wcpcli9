@@ -58,7 +58,7 @@
                             "name": "managementnetwork0",
                             "network": "${VKS_MGMT_NETWORK1}"
                         },
-                        "network_type": "SUPERVISOR_MANAGEMENT"
+                        "network_type": "DVPG"
                     },
                     "personas": [ "MANAGEMENT" ]
                 },
@@ -103,7 +103,7 @@
                 "ip_assignments": [ {
                     "assignee": "NODE",
                     "ranges": [ {
-                        "address": "${FLB_WORKLOAD_STARTING_IP}",
+                        "address": "${FLB_WORKLOAD_NW_STARTING_IP}",
                         "count": ${FLB_WORKLOAD_IP_COUNT}
                     } ]
                 },
@@ -115,7 +115,7 @@
                     } ]
                 } ]
             },
-            "network": "workloadNetwork0",
+            "network": "workloadnetwork0",
             "network_type": "VSPHERE",
             "services": {
                 "dns": {
