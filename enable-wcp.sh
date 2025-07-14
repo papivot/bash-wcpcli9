@@ -77,7 +77,7 @@ export FLB_WORKLOAD_IP_COUNT=64
 #export NSX_NAMESPACE_COUNT=4096
 
 #############################################################
-# VPC specific variables
+# VPC-specific variables
 #############################################################
 #export VPC_ORG='default'
 #export VPC_PROJECT='default'
@@ -90,7 +90,7 @@ export FLB_WORKLOAD_IP_COUNT=64
 ################################################
 log "Starting pre-flight checks..."
 for cmd in jq curl openssl mktemp; do
-        if ! command -v '${cmd}' &> /dev/null; then
+        if command -v '${cmd}' &> /dev/null; then
                 log "ERROR: Required command '${cmd}' could not be found. Please install it to run this script."
                 exit 1
         fi
@@ -204,7 +204,7 @@ then
 fi
 
 ################################################
-# Complete NSX specific processing
+# Complete NSX-specific processing
 ###############################################
 if [ ${DEPLOYMENT_TYPE} == "NSX" ]
 then
