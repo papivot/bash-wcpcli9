@@ -12,9 +12,9 @@ log() {
 # Enter Infrastructure variables here
 ###################################################
 VCENTER_VERSION=9
-VCENTER_HOSTNAME=192.168.100.50
+VCENTER_HOSTNAME=vcenter-1.vrack.vsphere.local
 VCENTER_USERNAME=administrator@vsphere.local
-VCENTER_PASSWORD='VMware1!'
+VCENTER_PASSWORD='VMware123!VMware123!'
 NSX_MANAGER=192.168.100.57
 NSX_USERNAME='admin'
 NSX_PASSWORD='VMware123!VMware123!'
@@ -24,20 +24,20 @@ DEPLOYMENT_TYPE='FLB' # Allowed values are VPC, NSX, AVI, FLB
 #####################################################
 # Common variables
 #####################################################
-export DNS_SERVER='10.6.248.74'
-export NTP_SERVER='10.6.248.74'
-export DNS_SEARCHDOMAIN='env1.lab.test'
-export MGMT_STARTING_IP='192.168.100.60'
-export MGMT_GATEWAY_CIDR='192.168.100.1/23'
+export DNS_SERVER='10.0.0.250'
+export NTP_SERVER='10.0.0.250'
+export DNS_SEARCHDOMAIN='vrack.vsphere.local'
+export MGMT_STARTING_IP='10.0.0.60'
+export MGMT_GATEWAY_CIDR='10.0.0.250/22'
 export K8S_SERVICE_SUBNET='10.96.0.0'
 export K8S_SERVICE_SUBNET_COUNT=512 # Allowed values are 256, 512, 1024, 2048, 4096...
 export SUPERVISOR_NAME='supervisorCluster0'
 export SUPERVISOR_SIZE=TINY # Allowed values are TINY, SMALL, MEDIUM, LARGE 
 export SUPERVISOR_VM_COUNT=1 # Allowed values are 1, 3
-K8S_SUP_CLUSTER=Cluster
-K8S_MGMT_PORTGROUP1='DVPG-Mgmt-PG'
-K8S_WKD0_PORTGROUP='Workload0-VDS-PG' # Not needed for NSX
-K8S_STORAGE_POLICY='vSAN Default Storage Policy'
+K8S_SUP_CLUSTER=sddc-cluster-1
+K8S_MGMT_PORTGROUP1='SDDC-DPortGroup-VM-Mgmt'
+K8S_WKD0_PORTGROUP='SDDC-DPortGroup-VM-Workload0' # Not needed for NSX
+K8S_STORAGE_POLICY='tanzu'
 
 ###############################################################
 # AVI specific variables
@@ -53,14 +53,14 @@ K8S_STORAGE_POLICY='vSAN Default Storage Policy'
 ###############################################################
 # FLB specific variables
 ###############################################################
-export FLB_MANAGEMENT_STARTING_IP='192.168.100.165'
+export FLB_MANAGEMENT_STARTING_IP='10.0.0.65'
 export FLB_MANAGEMENT_IP_COUNT=2
-export FLB_NW_STARTING_IP='192.168.102.10'
+export FLB_NW_STARTING_IP='192.168.16.10'
 export FLB_NW_IP_COUNT=2
-export FLB_VIP_STARTING_IP='192.168.102.50'
+export FLB_VIP_STARTING_IP='192.168.16.15'
 export FLB_VIP_IP_COUNT=50
-export FLB_WORKLOAD_NW_GATEWAY_CIDR='192.168.102.1/23'
-export FLB_WORKLOAD_NW_STARTING_IP='192.168.102.100'
+export FLB_WORKLOAD_NW_GATEWAY_CIDR='192.168.16.1/24'
+export FLB_WORKLOAD_NW_STARTING_IP='192.168.16.100'
 export FLB_WORKLOAD_IP_COUNT=64
 
 #############################################################
