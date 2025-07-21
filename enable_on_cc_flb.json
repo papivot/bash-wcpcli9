@@ -99,7 +99,7 @@
         "network": {
             "ip_management": {
                 "dhcp_enabled": false,
-                "gateway_address": "FLB_WORKLOAD_NW_GATEWAY_CIDR",
+                "gateway_address": "${FLB_WORKLOAD_NW_GATEWAY_CIDR}",
                 "ip_assignments": [ {
                     "assignee": "NODE",
                     "ranges": [ {
